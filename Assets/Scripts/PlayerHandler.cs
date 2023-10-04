@@ -61,13 +61,12 @@ public class PlayerHandler : Singelton<PlayerHandler>
     {
         while (true)
         {
-            yield return new WaitForSeconds(.1f);
 
             Vector3 currentProjScale = _currentProjectile.gameObject.transform.localScale;
             Vector3 currentScalePlayer = _modelPlayer.transform.localScale;
 
-            currentProjScale = Vector3.Lerp(currentProjScale, currentProjScale + Vector3.one * _scaleBySecond, Time.deltaTime);
-            currentScalePlayer = Vector3.Lerp(currentScalePlayer, currentScalePlayer - Vector3.one * _scaleBySecond, Time.deltaTime);
+            currentProjScale = Vector3.Lerp(currentProjScale, currentProjScale + Vector3.one * _scaleBySecond, .1f);
+            currentScalePlayer = Vector3.Lerp(currentScalePlayer, currentScalePlayer - Vector3.one * _scaleBySecond, .1f);
 
             _currentProjectile.gameObject.transform.localScale = currentProjScale;
             _modelPlayer.transform.localScale = currentScalePlayer;
@@ -78,6 +77,7 @@ public class PlayerHandler : Singelton<PlayerHandler>
             {
                 Shoot();
             }
+            yield return new WaitForSeconds(.1f);
         }
     }
     private void CheckPath()
