@@ -76,6 +76,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 10
   _isMove: 0
+  _offsetForActionPlay: {x: 2.5, y: 0, z: 2.5}
 --- !u!114 &6106439219153067593
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89,13 +90,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scaleBySecond: 1
-  _spawnPoint: {fileID: 3274366041353462497}
-  _modelPlayer: {fileID: 0}
-  _spawnPrefab: {fileID: 5520528449657908676, guid: 63818d8fd6e0fc04b96913b7069daaa2,
-    type: 3}
+  _criticalRadius: 0
   _enemyMask:
     serializedVersion: 2
     m_Bits: 64
+  _spawnPrefab: {fileID: 5520528449657908676, guid: 63818d8fd6e0fc04b96913b7069daaa2,
+    type: 3}
+  _spawnPoint: {fileID: 3274366041353462497}
+  _movement: {fileID: 4888869119496935858}
+  _modelPlayer: {fileID: 1887891983463245414}
 --- !u!1 &7715003961041333080
 GameObject:
   m_ObjectHideFlags: 0

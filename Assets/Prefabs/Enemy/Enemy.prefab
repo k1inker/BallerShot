@@ -121,3 +121,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _timeAllive: 1
+  _collider: {fileID: 822204441141568805}

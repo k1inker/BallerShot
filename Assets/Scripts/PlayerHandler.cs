@@ -1,29 +1,38 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
-public class FireHandler : Singelton<FireHandler>
+public class PlayerHandler : Singelton<PlayerHandler>
 {
-    [Header("Setup proj")]
+    public Action<bool> OnFinishGame;
+
+    [Header("Setup projectile")]
     [SerializeField] private float _scaleBySecond;
     [SerializeField] private float _criticalRadius;
     [SerializeField] private LayerMask _enemyMask;
-
-    [SerializeField] private Transform _spawnPoint;
-    [SerializeField] private Transform _modelPlayer;
     [SerializeField] private GameObject _spawnPrefab;
+    [SerializeField] private Transform _spawnPoint;
+
+    [Header("General")]
+    [SerializeField] private ByPathMovement _movement;
+    [SerializeField] private Transform _modelPlayer;
 
     private bool _isCanShoot = true;
     private GameObject _currentProjectile;
     private Coroutine _increaseSizeCorutine;
     private void OnEnable()
     {
-        InputUI.Instance.OnPointDown += ChargingFire;
-        InputUI.Instance.OnPointUp += Shoot;
+        UIManager.Instance.OnPointDown += ChargingFire;
+        UIManager.Instance.OnPointUp += Shoot;
+        _movement.OnReachPoint += () => DoorHandler.Instance.OpenDoor();
+        _movement.OnReachPoint += () => StartCoroutine(FinishGameWithDelay());
     }
     private void OnDisable()
     {
-        InputUI.Instance.OnPointDown -= ChargingFire;
-        InputUI.Instance.OnPointUp -= Shoot;
+        UIManager.Instance.OnPointDown -= ChargingFire;
+        UIManager.Instance.OnPointUp -= Shoot;
+        _movement.OnReachPoint -= () => DoorHandler.Instance.OpenDoor();
+        _movement.OnReachPoint -= () => StartCoroutine(FinishGameWithDelay());
     }
     public void OnProjectileDestroy()
     {
@@ -65,9 +74,9 @@ public class FireHandler : Singelton<FireHandler>
 
             PathHandler.Instance.PathRender.SetLineWidth(currentScalePlayer.x);
 
-            if(_criticalRadius >= currentScalePlayer.x)
+            if (_criticalRadius >= currentScalePlayer.x)
             {
-                Debug.Log("You loose");
+                Shoot();
             }
         }
     }
@@ -79,11 +88,21 @@ public class FireHandler : Singelton<FireHandler>
         Ray ray = new Ray(startPosition, endPosition - startPosition);
 
         // Получаем все объекты, которые пересекают луч
-        RaycastHit[] hits = Physics.SphereCastAll(ray, _modelPlayer.transform.localScale.x / 2f, Vector3.Distance(startPosition, endPosition),_enemyMask);
+        RaycastHit[] hits = Physics.SphereCastAll(ray, _modelPlayer.transform.localScale.x / 2f, Vector3.Distance(startPosition, endPosition), _enemyMask);
 
-        if(hits.Length == 0)
+        if (hits.Length == 0)
         {
+            _isCanShoot = false;
             GetComponent<ByPathMovement>().StartMove();
         }
+        else if(_modelPlayer.transform.localScale.x < _criticalRadius)
+        {
+            OnFinishGame?.Invoke(false);
+        }
+    }
+    private IEnumerator FinishGameWithDelay()
+    {
+        yield return new WaitForSeconds(1f);
+        OnFinishGame?.Invoke(true);
     }
 }

@@ -4,7 +4,6 @@ public class EnemySpawn : MonoBehaviour
 {
     [Header("Setup Spawn Enemy")]
     [SerializeField] private Vector3Int _sizeMap;
-    [SerializeField] private int _countEnemyPerChunk;
     [SerializeField] private int _sizeChunk;
 
     [Space]
