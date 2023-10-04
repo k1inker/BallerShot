@@ -3,12 +3,14 @@ using UnityEngine;
 
 public class FireHandler : Singelton<FireHandler>
 {
+    [Header("Setup proj")]
     [SerializeField] private float _scaleBySecond;
+    [SerializeField] private float _criticalRadius;
+    [SerializeField] private LayerMask _enemyMask;
 
     [SerializeField] private Transform _spawnPoint;
     [SerializeField] private Transform _modelPlayer;
     [SerializeField] private GameObject _spawnPrefab;
-    [SerializeField] private LayerMask _enemyMask;
 
     private bool _isCanShoot = true;
     private GameObject _currentProjectile;
@@ -62,6 +64,11 @@ public class FireHandler : Singelton<FireHandler>
             _modelPlayer.transform.localScale = currentScalePlayer;
 
             PathHandler.Instance.PathRender.SetLineWidth(currentScalePlayer.x);
+
+            if(_criticalRadius >= currentScalePlayer.x)
+            {
+                Debug.Log("You loose");
+            }
         }
     }
     private void CheckPath()
@@ -73,7 +80,7 @@ public class FireHandler : Singelton<FireHandler>
 
         // Получаем все объекты, которые пересекают луч
         RaycastHit[] hits = Physics.SphereCastAll(ray, _modelPlayer.transform.localScale.x / 2f, Vector3.Distance(startPosition, endPosition),_enemyMask);
-        Debug.Log(hits.Length);
+
         if(hits.Length == 0)
         {
             GetComponent<ByPathMovement>().StartMove();

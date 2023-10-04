@@ -6,7 +6,10 @@ public class HittingProjectile : MonoBehaviour
     [SerializeField] private Material _material;
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag.Equals("Enemy"))
+        if (!other.tag.Equals("Enemy") && !other.tag.Equals("Door"))
+            return;
+
+        if (other.tag.Equals("Enemy"))
         {
             var hittingPosition= other.ClosestPoint(other.transform.position);
 
@@ -18,8 +21,8 @@ public class HittingProjectile : MonoBehaviour
                     damageHandler.TakeGamage(_material);
                 }
             }
-            Destroy(gameObject);
         }
+        Destroy(gameObject);
     }
     private void OnDestroy()
     {
